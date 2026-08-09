@@ -1,3 +1,4 @@
+# .github/workflows/deploy.yml
 name: Fixer Web Deploy (Auto-Healing Protocol)
 
 on:
@@ -26,16 +27,13 @@ jobs:
         run: flutter create . --platforms web
 
       - name: Self-Healing 2 (Purge Cache & Rebuild Dependencies)
-        # 依存関係の破損やキャッシュエラーを自動で浄化（自己修復）します
         run: flutter clean && flutter pub get
 
       - name: Self-Healing 3 (Auto-Fix Syntax & Formatting)
-        # iPhoneでのコピペ時に発生しがちな微細な構文エラーを自動修正します
         run: dart fix --apply || true
 
-      - name: Build Web with Auto-Diagnostics
-        # ビルドに失敗した場合、AIに提出するための「超詳細な解析ログ（-v）」を自動で吐き出します
-        run: flutter build web --base-href /fixer/ --release || (echo "🚨 CRITICAL BUILD CRASH DETECTED. DUMPING VERBOSE LOGS FOR AI ASSIST..." && flutter build web -v && exit 1)
+      - name: Build Web with Auto-Diagnostics (Resolved Base-Href)
+        run: flutter build web --base-href /LIRIDGE-fixer/ --release || (echo "🚨 CRITICAL BUILD CRASH DETECTED." && flutter build web -v && exit 1)
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
